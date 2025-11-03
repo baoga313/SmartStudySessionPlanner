@@ -1,37 +1,47 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login</title>
-    </head>
-    <body>
-        <div class="login-container">
-            <div class="left-panel">
-            <h3>Login</h3>
-            <form action="/login" method="post">
-                <div class="form-group">
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        placeholder="Enter your email"
-                    />
-                    
-                </div>
-                <div class="form-group">
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        required
-                        placeholder="Enter your password"
-                    />
-                <div class = "login-button">
-                    <button type="submit" class="login-button">Login</button>
-                </div>
-            </form>
-        </div>
-    </body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/page.css" />
+  </head>
+  <body>
+    <div class="title-container">
+      <h2 class="title">
+        <span class="title-word title-word-1">Smart</span>
+        <span class="title-word title-word-2">Study</span>
+        <span class="title-word title-word-3">Session</span>
+        <span class="title-word title-word-4">Planner</span>
+      </h2>
+    </div>
+    <div class="login-container">
+      <div class="login-box">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+          <div class="form-group">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="Enter your email"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              placeholder="Enter your password"
+            />
+          </div>
+          <div class="login-button">
+            <button type="submit" class="login-button">Get Started</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
 </html>
