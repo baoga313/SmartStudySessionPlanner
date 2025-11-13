@@ -1,47 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
-    <link rel="stylesheet" href="/static/page.css" />
-  </head>
-  <body>
-    <div class="title-container">
-      <h2 class="title">
-        <span class="title-word title-word-1">Smart</span>
-        <span class="title-word title-word-2">Study</span>
-        <span class="title-word title-word-3">Session</span>
-        <span class="title-word title-word-4">Planner</span>
-      </h2>
-    </div>
-    <div class="login-container">
-      <div class="login-box">
-        <h2>Login</h2>
-        <form action="/" method="post">
-          <div class="form-group">
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              placeholder="Enter your email"
-            />
-          </div>
-          <div class="form-group">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              placeholder="Enter your password"
-            />
-          </div>
-          <div class="login-button">
-            <button type="submit" class="login-button">Get Started</button>
-          </div>
-        </form>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <link rel="stylesheet" href="/static/page.css" />
+</head>
+
+<body>
+  <div class="title-container">
+    <h2 class="title">
+      <span class="title-word title-word-1">Smart</span>
+      <span class="title-word title-word-2">Study</span>
+      <span class="title-word title-word-3">Session</span>
+      <span class="title-word title-word-4">Planner</span>
+    </h2>
+  </div>
+
+   <!-- Main login container -->
+  <div class="login-container">
+    <div class="login-box">
+      <h2>Login</h2>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="container mt-3">
+        {% for category, message in messages %}
+        <div
+          class="alert alert-{{ 'danger' if category == 'error' else ('warning' if category == 'warning' else 'success') }} alert-dismissible fade show"
+          role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+
+      <!-- Login form -->
+      <form action="/" method="post">
+        <div class="form-group">
+          <input type="email" id="email" name="email" required placeholder="Enter your email" />
+        </div>
+        <div class="form-group">
+          <input type="password" id="password" name="password" required placeholder="Enter your password" />
+        </div>
+
+        <!-- Submit button -->
+        <div class="login-button">
+          <button type="submit" class="login-button">Get Started</button>
+        </div>
+      </form>
+
+      <!-- Sign up link for new users -->
+      <div class="text-center mt-3">
+        <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
       </div>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>

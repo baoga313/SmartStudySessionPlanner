@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Add Course - Study Planner</title>
+    <link rel="stylesheet" href="/static/page.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body class="add-course-page">
+    <div class="container mt-4 dashboard-container">
+        <!-- Back Button -->
+        <a href="{{ url_for('settings_page') }}" class="btn btn-outline-secondary mb-3">&larr; Back</a>
+        
+        <h2>Add New Course</h2>
+        
+        <!-- Form to add a new course -->
+        <form action="{{ url_for('add_course_page') }}" method="post">
+            
+            <!-- Course Name -->
+            <div class="mb-3">
+                <label for="course_name" class="form-label">Course Name</label>
+                <input type="text" class="form-control" id="course_name" name="course_name" required>
+            </div>
+
+            <!-- Difficulty Level Selection -->
+            <div class="mb-3">
+                <label for="difficulty_level" class="form-label">Difficulty Level</label>
+                <select class="form-select" id="difficulty_level" name="difficulty_level" required>
+                    <option value="" selected disabled>-- Select Difficulty --</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
+
+            <!-- Add course button -->
+            <button type="submit" class="btn btn-primary">Add Course</button>
+            <a href="{{ url_for('settings_page') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</body>
+
+</html>

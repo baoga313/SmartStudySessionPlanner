@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - Smart Study Session Planner</title>
+    <link rel="stylesheet" href="/static/page.css" />
+</head>
+
+<body>
+    <div class="title-container">
+        <h2 class="title">
+            <span class="title-word title-word-1">Smart</span>
+            <span class="title-word title-word-2">Study</span>
+            <span class="title-word title-word-3">Session</span>
+            <span class="title-word title-word-4">Planner</span>
+        </h2>
+    </div>
+
+    <!-- Main signup form container -->
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Sign Up</h2>
+            <form action="{{ url_for('signup') }}" method="post">
+                <div class="form-group">
+                    <input type="email" name="email" required placeholder="Enter your email" />
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" required placeholder="Enter your password" />
+                </div>
+
+                <!-- Dropdown menu to select best study time -->
+                <div class="form-group">
+                    <label for="best_time">Best Time to Study</label>
+                    <select name="best_time" id="best_time" class="form-control" required>
+                        <option value="">-- Select --</option>
+                        <option value="Morning">Morning</option>
+                        <option value="Afternoon">Afternoon</option>
+                        <option value="Evening">Evening</option>
+                    </select>
+                </div>
+
+                <!-- Submit button -->
+                <div class="login-button">
+                    <button type="submit" class="login-button">Sign Up</button>
+                </div>
+            </form>
+
+            <!-- Link to go back to login page if user already has an account -->
+            <div class="text-center mt-3">
+                <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

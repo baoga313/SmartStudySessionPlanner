@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Study Timer</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/page.css" />
+  </head> 
+    <!-- Back Button -->
+    <a
+      href="{{ url_for('dashboard') }}"
+      class="btn btn-outline-secondary back-btn"
+      >&larr; Back</a
+    >
+
+    <!-- Task Information Header -->
+    <div class="task-header">
+      <h1 class="mb-3">{{ task.subject }}</h1>
+      <p class="mb-3 fs-5">{{ task.description }}</p>
+
+      <!-- Course and Difficulty Info -->
+      <div class="d-flex justify-content-center align-items-center mb-3">
+        <span class="badge difficulty-badge bg-info">
+          <i class="bi bi-mortarboard"></i> {{ task.course_name }}
+        </span>
+        {% if task.difficulty_level == 'Hard' %}
+        <span class="badge difficulty-badge bg-danger">
+          <i class="bi bi-fire"></i> Hard
+        </span>
+        {% elif task.difficulty_level == 'Medium' %}
+        <span class="badge difficulty-badge bg-warning text-dark">
+          <i class="bi bi-lightning"></i> Medium
+        </span>
+        {% else %}
+        <span class="badge difficulty-badge bg-success">
+          <i class="bi bi-check-circle"></i> Easy
+        </span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Timer Display -->
+    <div class="timer-container my-4">
+      <div id="timer" class="timer display-3 fw-bold">00:00</div>
+    </div>
+
+    <!-- Timer Control Buttons -->
+    <div class="control-buttons d-flex justify-content-center gap-2">
+      <button id="start" class="btn btn-success">Start</button>
+      <button id="pause" class="btn btn-warning">Pause</button>
+      <button id="endSession" class="btn btn-danger">End Session</button>
+    </div>
+
+    <script>
+      // Determine study & break times based on difficulty
+      const difficulty = "{{ task.difficulty_level }}";
+      let studyMinutes = 60;
+      let breakMinutes = 10;
+      if (difficulty === "Easy") {
+        studyMinutes = 45;
+        breakMinutes = 10;
+      }
+      if (difficulty === "Medium") {
+        studyMinutes = 60;
+        breakMinutes = 10;
+      }
+      if (difficulty === "Hard") {
+        studyMinutes = 90;
+        breakMinutes = 15;
+      }
+
+      let totalSeconds = studyMinutes * 60;
+      let remaining = totalSeconds;
+      let timer = null;
+      let halfwayNotified = false;
+      const timerDisplay = document.getElementById("timer");
+
+      function updateDisplay() {
+        const m = Math.floor(remaining / 60);
+        const s = remaining % 60;
+        timerDisplay.textContent = `${m.toString().padStart(2, "0")}:${s
+          .toString()
+          .padStart(2, "0")}`;
+      }
+
+      // Start button
+      document.getElementById("start").onclick = () => {
+        if (timer) return;
+        timer = setInterval(() => {
+          remaining--;
+          updateDisplay();
+
+          if (!halfwayNotified && remaining === totalSeconds / 2) {
+            halfwayNotified = true;
+            alert(`Break time! Take ${breakMinutes} minutes off.`);
+            setTimeout(
+              () => alert("Break finished! Back to study."),
+              breakMinutes * 60 * 1000
+            );
+          }
+
+          if (remaining <= 0) {
+            clearInterval(timer);
+            timer = null;
+            alert("Session complete!");
+          }
+        }, 1000);
+      };
+
+      // Pause button
+      document.getElementById("pause").onclick = () => {
+        clearInterval(timer);
+        timer = null;
+      };
+
+      // End Session button
+      document.getElementById("endSession").onclick = async () => {
+        clearInterval(timer);
+        await fetch(`/end_session/{{ task.id }}`, { method: "POST" });
+        window.location.href = "/progress";
+      };
+
+      updateDisplay();
+    </script>
+  </body>
+</html>
