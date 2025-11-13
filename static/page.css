@@ -101,7 +101,11 @@
   background-color: #f8f9fa;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.list-group {
+  margin-top: 20px;
 }
 
 .list-group-item {
@@ -143,6 +147,10 @@
 
 /* Timer Layout */
 .timer-container {
+  border: #6d97c5 4px solid;
+  border-radius: 100px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 40px 60px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -189,9 +197,10 @@
 
 /* General Page Style */
 body {
-  background-color: #f8f9fa;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
+  background: linear-gradient(135deg, #b0b4c4 0%, #2640d4 100%);
+  min-height: 100vh;
+  color: white;
+  padding: 20px;
 }
 
 /* Navbar Style */
@@ -261,10 +270,33 @@ h2 {
   color: #666;
 }
 
-
 .dashboard-container {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.task-overdue {
+  opacity: 0.4;
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.task-current {
+  opacity: 1;
+}
+
+.task-overdue td {
+  text-decoration: line-through;
+  color: #666;
+}
+
+.nav-custom {
+  border: #555 2px solid;
+  border-radius: 20px;
+}
+.task-info {
+  padding: 10px;
+  border-radius: 20px;
+  border: #333 2px solid;
 }

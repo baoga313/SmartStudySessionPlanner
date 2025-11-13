@@ -19,20 +19,36 @@ def get_tasks_for_today(user_id):
             t.id, 
             t.subject, 
             t.description, 
-            t.task_date, 
+            t.task_date,
             c.course_name,
             c.difficulty_level,
+            DATEDIFF(t.task_date, CURDATE()) as days_until_due,
             CASE 
                 WHEN c.difficulty_level = 'Hard' THEN 90
                 WHEN c.difficulty_level = 'Medium' THEN 60
                 WHEN c.difficulty_level = 'Easy' THEN 45
                 ELSE 60
-            END AS study_duration
+            END AS study_duration,
+            -- Priority score for intelligent ordering
+            (CASE 
+                WHEN DATEDIFF(t.task_date, CURDATE()) = 0 THEN 100  -- Due today
+                WHEN DATEDIFF(t.task_date, CURDATE()) = 1 THEN 80   -- Due tomorrow  
+                WHEN DATEDIFF(t.task_date, CURDATE()) <= 3 THEN 60  -- Due in 2-3 days
+                WHEN DATEDIFF(t.task_date, CURDATE()) <= 7 THEN 40  -- Due this week
+                ELSE 20  -- Due later
+            END +
+            CASE 
+                WHEN c.difficulty_level = 'Hard' THEN 30
+                WHEN c.difficulty_level = 'Medium' THEN 20
+                WHEN c.difficulty_level = 'Easy' THEN 10
+                ELSE 15
+            END) as priority_score
         FROM tasks t
         LEFT JOIN courses c ON t.course_id = c.id
         WHERE t.user_id = %s
-        AND t.task_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 DAY)
-        ORDER BY t.task_date ASC
+        AND t.task_date >= CURDATE()
+        AND t.task_date <= DATE_ADD(CURDATE(), INTERVAL 14 DAY)  -- Next 2 weeks
+        ORDER BY priority_score DESC, t.task_date ASC
     """
     cursor.execute(query, (user_id,))
     tasks = cursor.fetchall()
@@ -59,9 +75,10 @@ def get_tasks(user_id):
     db = get_db()
     cursor = db.cursor(dictionary=True)
     query = """
-        SELECT id, subject AS task_name, task_date AS due_date, description AS course_name
-        FROM tasks
-        WHERE user_id = %s
+        SELECT t.id, t.subject AS task_name, t.task_date AS due_date,  c.course_name as course_name
+        FROM tasks t
+        LEFT JOIN courses c ON t.course_id = c.id
+        WHERE t.user_id = %s
         ORDER BY task_date ASC
     """
     cursor.execute(query, (user_id,))
@@ -69,6 +86,17 @@ def get_tasks(user_id):
     cursor.close()
     db.close()
     return tasks
+
+def delete_task(task_id):
+    db = get_db()
+    cursor = db.cursor()
+    query = "DELETE FROM tasks WHERE id = %s"
+    cursor.execute(query, (task_id, ))   
+    db.commit()
+    rows_affected = cursor.rowcount
+    cursor.close()
+    db.close()
+    return rows_affected > 0
 
 def get_courses():
     db = get_db()
@@ -110,3 +138,14 @@ def add_course(course_name, difficulty_level):
     db.commit()
     cursor.close()
     db.close()
+
+def delete_course(course_id):
+    db = get_db()
+    cursor = db.cursor()
+    query = "DELETE FROM course WHERE id = %s"
+    cursor.execute(query, (course_id, ))
+    db.commit()
+    rows_affected = cursor.rowcount
+    cursor.close()
+    db.close()
+    return rows_affected > 0

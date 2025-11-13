@@ -4,6 +4,6 @@ def get_db():
     return mysql.connector.connect(
         host="localhost",               # Update with your MySQL host
         user="root",      # Your MySQL username
-        password="laptrinh2025",  # Your MySQL password
+        password="BaolearnSQL",  # Your MySQL password
         database="study_planner",    # Your database name
     )

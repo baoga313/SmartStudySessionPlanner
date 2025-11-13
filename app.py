@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from models import get_user, get_tasks_for_today, get_task_by_id, get_courses, get_tasks, add_task, add_course
+from models import get_user, get_tasks_for_today, get_task_by_id, get_courses, get_tasks, add_task, add_course, delete_task, delete_course
 from db import get_db
 from datetime import date
 from flask import jsonify
@@ -92,10 +92,11 @@ def task_timer(task_id):
 def all_tasks():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-
+    
+    today_date = date.today()
     user_id = session['user_id']
     tasks = get_tasks(user_id)  # use the function from models.py
-    return render_template('tasks.html', tasks=tasks)
+    return render_template('tasks.html',today_date = today_date, tasks=tasks)
 
 # Add task page
 @app.route('/tasks/add', methods=['GET'])
@@ -127,6 +128,15 @@ def add_task_submit():
     add_task(user_id, task_name, course_id, description, due_date)
     flash('Task added successfully!', 'success')
     return redirect(url_for('all_tasks'))
+#Delete task
+@app.route('/task/delete/<int:task_id>', methods=['POST'])
+def delete_task_route(task_id):
+    if delete_task (task_id):
+        flash('Task deleted successfully!', 'success')
+    else:
+        flash('Task not found or could not be deleted.', 'error')
+    return redirect(url_for('all_tasks'))
+
 
 # Setting page
 @app.route("/settings")
@@ -165,6 +175,13 @@ def add_course_page():
         return redirect(url_for("settings_page"))
 
     return render_template("add_course.html")
+
+@app.route("/settings/delete_course/<int:course_id>", methods=["POST"])
+def delete_course_route (course_id):
+    if delete_course (course_id):
+        flash('Course deleted successfully!', 'success')
+
+    return redirect(url_for('settings_page'))
 
 # End session
 @app.route('/end_session/<int:task_id>', methods=['POST'])
