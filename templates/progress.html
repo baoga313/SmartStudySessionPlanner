@@ -27,7 +27,7 @@
           class="list-group-item d-flex justify-content-between align-items-center"
         >
           <span><strong>{{ item.course_name }}</strong></span>
-          <span>{{ "%.1f"|format(item.total_minutes / 60) }} hours</span>
+          <span>{{ "%.1f"|format(item.total_minutes) }} mins</span>
         </li>
         {% endfor %}
       </ul>

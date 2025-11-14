@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from models import get_user, get_tasks_for_today, get_task_by_id, get_courses, get_tasks, add_task, add_course, delete_task, delete_course
 from db import get_db
 from datetime import date
@@ -190,21 +190,25 @@ def end_session(task_id):
         return redirect(url_for('login'))
 
     user_id = session['user_id']
+    
+    # Get actual minutes from request
+    request_data = request.get_json()
+    actual_minutes = request_data.get('actual_minutes', 0) if request_data else 0
 
     db = get_db()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT course_id, study_duration FROM tasks WHERE id = %s", (task_id,))
+    cursor.execute("SELECT course_id FROM tasks WHERE id = %s", (task_id,))
     task = cursor.fetchone()
 
     if not task:
         return jsonify({'status': 'error', 'message': 'Task not found'})
 
-    # Update or insert into progress
+    # Record ACTUAL time spent, not planned duration
     cursor.execute("""
         INSERT INTO progress (user_id, course_id, total_minutes)
         VALUES (%s, %s, %s)
         ON DUPLICATE KEY UPDATE total_minutes = total_minutes + VALUES(total_minutes)
-    """, (user_id, task['course_id'], task['study_duration']))
+    """, (user_id, task['course_id'], actual_minutes))
 
     db.commit()
     cursor.close()
@@ -233,6 +237,12 @@ def progress_page():
     db.close()
 
     return render_template('progress.html', progress=progress)
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('Logged out!')
+    return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
