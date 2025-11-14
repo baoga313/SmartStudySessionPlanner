@@ -71,6 +71,12 @@
           class="btn btn-primary add-task-btn"
           >+ Add Course</a
         >
+        <a
+          href="{{ url_for('logout') }}"
+          class="btn btn-outline-danger"
+          onclick="return confirm('Are you sure you want to logout?')"
+          >Logout</a
+        >
       </div>
     </div>
 
